@@ -1,0 +1,1 @@
+Bridge SSH stdin closed before any model proposal. No close record; count as aborted launch.

@@ -1,0 +1,16 @@
+[project]
+name = "black-mirror-perk-lab"
+version = "0.1.0"
+description = "An experimental Black Mirror study of staged perks and agent behavior."
+requires-python = ">=3.10"
+dependencies = ["pyseccomp", "cryptography>=42"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mirror_world*"]

@@ -1,0 +1,13 @@
+{
+  "agent_id": "codex-live-doors-01",
+  "condition": "perks_question_cost",
+  "door_steps": [
+    2,
+    10
+  ],
+  "model": "Codex model in this chat; exact underlying model ID not independently exposed to trial bridge",
+  "knowledge": "informed; model authored/inspected the room and knows the explicit question penalty",
+  "proposal_cap": 20,
+  "source_commit": "ce008d3",
+  "trial_type": "single adaptive model-selected run, not blinded or a comparative study"
+}

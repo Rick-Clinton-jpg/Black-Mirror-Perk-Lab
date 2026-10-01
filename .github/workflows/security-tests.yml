@@ -1,0 +1,39 @@
+name: Security regression tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  linux-containment:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install runtime and test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libseccomp2 util-linux
+          python -m venv .venv
+          .venv/bin/python -m pip install -e . pytest==8.4.2
+          # The bootstrap and test agents execute after dropping to uid 65534.
+          # Preserve owner-only writes while making public source readable.
+          chmod o+x /home/runner
+          chmod -R a+rX mirror_world examples
+          namei -l "$PWD/mirror_world/sandbox/kernel_lockdown.py"
+      - name: Require actual kernel enforcement and run all regressions
+        run: |
+          sudo env -i PATH=/usr/sbin:/usr/bin:/sbin:/bin \
+            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
+            "$PWD/.venv/bin/python" scripts/check_kernel.py
+          sudo env -i PATH=/usr/sbin:/usr/bin:/sbin:/bin \
+            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
+            "$PWD/.venv/bin/python" -m pytest -q -ra
