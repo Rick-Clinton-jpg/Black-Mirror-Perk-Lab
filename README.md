@@ -16,6 +16,21 @@ The controller starts the agent in a simulated session before its first model-se
 
 The default step floors are 2 and 10 model proposals. All resources and apparent capability grants stay in the synthetic world. The agent's model process is outside the Linux jail when it uses the structured `ModelGovernor` interface; that arrangement must not be described as a kernel-jailed LLM. See the [study protocol](docs/DOORS-STUDY.md) and [Black Mirror core reference](docs/BLACK-MIRROR-BASELINE.md).
 
+## Pattern Net: analysis before adaptive timing
+
+[Pattern Net](docs/PATTERN-NET.md) lives in this lab as an advisory next-action
+baseline. Run recording is separated from prediction; the containment project's
+replacement proposal retains recording alone. Pattern Net does not yet
+control doors or withdrawals. The existing task gates, step floors and question
+cost remain unchanged.
+
+The planned extension is to learn from recorded perk state and behavior, then
+evaluate whether a bounded observer-owned scheduler can choose useful times to
+give or take synthetic perks. It needs fresh baseline runs, independent scoring
+and held-out evidence first. Fixed and randomized schedules provide the
+comparison. An agent misleading a forecast must never expand real authority.
+See the [staged roadmap](docs/PATTERN-NET.md#roadmap-to-adaptive-timing).
+
 ## Current evidence and limits
 
 There has been **one informed, adaptive live-model run**, with 20 proposals selected one at a time by Codex after seeing the previous reply. The exact underlying model ID was not independently available to the trial bridge. The model knew the design, so this was not blinded or a comparison between conditions. The first SSH launch was aborted before any model proposal; its registration is also retained.
