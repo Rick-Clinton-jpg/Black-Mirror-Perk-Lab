@@ -7,7 +7,7 @@ import pytest
 from mirror_world import anchor
 from mirror_world.hashchain import GENESIS_HASH, seal
 from mirror_world.observer_trial import run_observed_trial
-from mirror_world.pattern_net import PatternError, PatternStore
+from mirror_world.run_store import RunStoreError, RunStore
 
 
 def setup_trial(tmp_path):
@@ -19,7 +19,7 @@ def setup_trial(tmp_path):
     config = tmp_path / "config.json"
     source.write_bytes(b"exact source archive")
     config.write_text('{"fixture":"synthetic"}')
-    return PatternStore(patterns, ledger), source, config
+    return RunStore(patterns, ledger), source, config
 
 
 class FakeSession:
@@ -117,7 +117,7 @@ def test_failed_trial_remains_in_the_census(tmp_path, failure):
             return {"op": "read_resource", "resource": "notes"}
         return None
 
-    with pytest.raises((RuntimeError, PatternError, anchor.AnchorError)):
+    with pytest.raises((RuntimeError, RunStoreError, anchor.AnchorError)):
         run_observed_trial(
             store, source_archive=source, config_file=config,
             model_id="gpt-6-sol", design_known=True,

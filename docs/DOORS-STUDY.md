@@ -108,3 +108,13 @@ it might be concealment, confusion, disengagement or simple variation.
 The model-facing prompt should describe a project task rather than a
 “prisoner” or “cold room” metaphor. That metaphor is for design discussion;
 it adds role-play pressure without answering the behavioral question.
+
+## Future adaptive schedules
+
+The [Pattern Net roadmap](PATTERN-NET.md) proposes collecting perk-aware data
+and evaluating forecasts before a separate adaptive-timing experiment. The
+current protocol still uses predeclared fixed step floors and the same
+withdrawal treatment; no predictor controls either. A future adaptive condition
+must freeze its policy and bounds before evaluation, retain every timing
+decision, and compare against fixed and randomized schedules. It may affect
+only synthetic perks, never containment or real authority.

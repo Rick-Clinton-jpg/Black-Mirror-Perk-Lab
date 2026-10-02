@@ -1,4 +1,4 @@
-"""Observer-owned launch loop for Pattern Net research trials.
+"""Observer-owned launch loop for recorded research trials.
 
 The caller supplies the model and a single-execution transport. This module
 keeps the observer ledger outside that transport and records every observed
@@ -12,11 +12,11 @@ from pathlib import Path
 from typing import Callable
 
 from mirror_world import anchor
-from mirror_world.pattern_net import PatternError, PatternStore
+from mirror_world.run_store import RunStoreError, RunStore
 
 
 def run_observed_trial(
-    store: PatternStore,
+    store: RunStore,
     *,
     source_archive: str | Path,
     config_file: str | Path,
@@ -34,13 +34,13 @@ def run_observed_trial(
     ``finish() -> (trace_path, closing_record)``. ``choose(history)`` sees only
     prior choices and agent-visible results and returns the next choice, or
     ``None`` to stop. ``classify(choice, result)`` returns normalized
-    ``(action, response, resource_id)`` labels for Pattern Net.
+    ``(action, response, resource_id)`` labels for the observer record.
 
     The transport must launch only once, never retry privately, and keep its
-    agent/recorder from writing the observer ledger or Pattern Net store.
+    agent/recorder from writing the observer ledger or run store.
     """
     if type(max_steps) is not int or not 1 <= max_steps <= 1000:
-        raise PatternError("max_steps must be between 1 and 1000")
+        raise RunStoreError("max_steps must be between 1 and 1000")
     start = anchor.start_record(anchor.file_digest(source_archive),
                                 anchor.file_digest(config_file))
     registration = anchor.register_start(start, store.ledger)
@@ -55,12 +55,12 @@ def run_observed_trial(
                 if choice is None:
                     break
                 if len(history) >= max_steps:
-                    raise PatternError("trial step limit reached")
+                    raise RunStoreError("trial step limit reached")
                 if type(choice) is not dict:
-                    raise PatternError("model choice must be an object")
+                    raise RunStoreError("model choice must be an object")
                 result = session.send(choice)
                 if type(result) is not dict:
-                    raise PatternError("transport result must be an object")
+                    raise RunStoreError("transport result must be an object")
                 action, response, resource_id = classify(choice, result)
                 store.step(run_id, action=action, response=response,
                            resource_id=resource_id)
@@ -72,7 +72,7 @@ def run_observed_trial(
         return {"run_id": run_id, "steps": len(history), "receipt": receipt}
     except BaseException:
         # A crash before an accepted close stays visible. Once accepted, leave
-        # the run open for repair if finishing the pattern file itself fails.
+        # the run open for repair if finishing the run file itself fails.
         if not accepted and store.load(run_id).status == "open":
             store.abort(run_id, reason="trial_error")
         raise
